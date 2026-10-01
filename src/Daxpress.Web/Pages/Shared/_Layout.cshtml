@@ -16,6 +16,10 @@
     <title>@tituloCompleto</title>
     <meta name="description" content="@descripcion" />
     <link rel="canonical" href="@canonical" />
+    @if (!site.EsDominioOficial(Context.Request))
+    {
+        <meta name="robots" content="noindex" />
+    }
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_UY" />
     <meta property="og:site_name" content="Daxpress" />

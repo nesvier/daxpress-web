@@ -9,6 +9,13 @@ public class SiteOptions
     public string WhatsApp { get; set; } = "";
     public string Ciudad { get; set; } = "Montevideo";
 
+    /// <summary>
+    /// Solo el dominio oficial se deja indexar; direcciones provisorias (onrender.com, localhost)
+    /// quedan fuera de Google para no duplicar contenido.
+    /// </summary>
+    public bool EsDominioOficial(HttpRequest request) =>
+        string.Equals(request.Host.Host, new Uri(BaseUrl).Host, StringComparison.OrdinalIgnoreCase);
+
     public string WhatsAppUrl(string mensaje = "Hola Daxpress, quiero agendar un diagnóstico sin costo.") =>
         $"https://wa.me/{WhatsApp}?text={Uri.EscapeDataString(mensaje)}";
 }
