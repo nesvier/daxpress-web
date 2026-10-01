@@ -1,0 +1,60 @@
+@page "/servicios/{slug}"
+@model Daxpress.Web.Pages.Servicios.DetalleModel
+@{
+    var s = Model.Servicio;
+    ViewData["Title"] = s.TituloSeo;
+    ViewData["Description"] = s.DescripcionSeo;
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <nav class="migas" aria-label="Ruta"><a href="/servicios">Servicios</a> / @s.Nombre</nav>
+        <h1>@s.Nombre</h1>
+        <p class="cabezal__bajada">@s.Intro</p>
+        <p class="cabezal__datos"><span><strong>@s.Precio</strong> + IVA</span><span>Plazo: @s.Plazo</span></p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor dos-columnas">
+        <div>
+            <h2>Qué incluye</h2>
+            <ul class="lista-check">
+                @foreach (var item in s.Incluye)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+        </div>
+        @if (s.Ejemplos.Length > 0)
+        {
+            <div>
+                <h2>Ejemplos</h2>
+                <ul class="lista-simple">
+                    @foreach (var item in s.Ejemplos)
+                    {
+                        <li>@item</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="seccion seccion--alterna">
+    <div class="contenedor">
+        <h2 class="seccion__titulo">Otros servicios</h2>
+        <div class="tarjetas">
+            @foreach (var otro in SiteContent.Servicios.Where(x => x.Slug != s.Slug))
+            {
+                <a class="tarjeta" href="/servicios/@otro.Slug">
+                    <h3>@otro.Nombre</h3>
+                    <p>@otro.Resumen</p>
+                    <p class="tarjeta__pie"><strong>@otro.Precio</strong></p>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<partial name="_Cta" />

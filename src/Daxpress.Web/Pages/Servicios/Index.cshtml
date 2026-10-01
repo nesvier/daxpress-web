@@ -1,0 +1,40 @@
+@page
+@{
+    ViewData["Title"] = "Servicios y precios de automatización para pymes";
+    ViewData["Description"] = "Diagnóstico sin costo, automatizaciones rápidas desde USD 300, apps de gestión desde USD 1.500 y software a medida con e-factura. Precio cerrado y 30 días de garantía.";
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <p class="etiqueta">Servicios</p>
+        <h1>Servicios y precios</h1>
+        <p class="cabezal__bajada">Precio cerrado, alcance por escrito y pago en dos partes. Los valores son de referencia en USD más IVA; el precio final se confirma tras el diagnóstico.</p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor">
+        <div class="tabla-precios" role="table" aria-label="Paquetes de servicio">
+            @foreach (var s in SiteContent.Servicios)
+            {
+                <a class="tabla-precios__fila" role="row" href="/servicios/@s.Slug">
+                    <span role="cell" class="tabla-precios__nombre">@s.Nombre</span>
+                    <span role="cell">@s.Resumen</span>
+                    <span role="cell" class="tabla-precios__plazo">@s.Plazo</span>
+                    <span role="cell" class="tabla-precios__precio">@s.Precio</span>
+                </a>
+            }
+        </div>
+
+        <h2 class="seccion__titulo seccion__titulo--espacio">Condiciones comerciales</h2>
+        <ul class="lista-check">
+            <li>50% al aprobar la propuesta y 50% a la entrega</li>
+            <li>Precios en dólares, más IVA</li>
+            <li>El alcance queda por escrito; los cambios adicionales se cotizan aparte</li>
+            <li>30 días de garantía de corrección de errores tras la entrega</li>
+            <li>El soporte mensual se contrata por separado y se puede cancelar con 30 días de aviso</li>
+        </ul>
+    </div>
+</section>
+
+<partial name="_Cta" />

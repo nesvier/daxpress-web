@@ -1,0 +1,28 @@
+@page
+@{
+    ViewData["Title"] = "Soluciones por sector: comercios, clínicas y talleres";
+    ViewData["Description"] = "Sistemas de stock para comercios y distribuidoras, reservas para clínicas y spas, y gestión de órdenes para talleres en Montevideo y Uruguay.";
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <p class="etiqueta">Sectores</p>
+        <h1>Soluciones según tu tipo de negocio</h1>
+        <p class="cabezal__bajada">Trabajamos con pymes que tienen procesos repetitivos y necesitan orden. Estos son los sectores donde más experiencia tenemos.</p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor tarjetas tarjetas--3">
+        @foreach (var s in SiteContent.Sectores)
+        {
+            <a class="tarjeta" href="/sectores/@s.Slug">
+                <h2 class="tarjeta__h">@s.Nombre</h2>
+                <p>@s.Intro</p>
+                <p class="tarjeta__pie enlace">Ver soluciones →</p>
+            </a>
+        }
+    </div>
+</section>
+
+<partial name="_Cta" />

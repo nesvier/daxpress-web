@@ -1,0 +1,20 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+@section Head {
+    <meta name="robots" content="noindex" />
+}
+
+<section class="cabezal cabezal--centro">
+    <div class="contenedor">
+        <h1>Algo salió mal</h1>
+        <p class="cabezal__bajada">Tuvimos un problema al cargar esta página. Probá de nuevo en unos minutos.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p><small>Código de referencia: <code>@Model.RequestId</code></small></p>
+        }
+        <a class="boton" href="/">Ir al inicio</a>
+    </div>
+</section>

@@ -1,0 +1,16 @@
+@* Bloque de llamada a la acción que cierra casi todas las páginas. *@
+<section class="cta">
+    <div class="contenedor cta__caja">
+        <div>
+            <h2>¿Cuántas horas por semana pierde tu equipo en tareas repetitivas?</h2>
+            <p>Agendá un diagnóstico sin costo: en una hora te decimos qué podés automatizar y cuánto tiempo vas a ahorrar.</p>
+        </div>
+        <div class="cta__acciones">
+            <a class="boton" href="/contacto">Agendar diagnóstico</a>
+            @if (!string.IsNullOrEmpty(SiteOpts.Value.WhatsApp))
+            {
+                <a class="boton boton--claro" href="@SiteOpts.Value.WhatsAppUrl()" rel="noopener" target="_blank">Escribinos por WhatsApp</a>
+            }
+        </div>
+    </div>
+</section>

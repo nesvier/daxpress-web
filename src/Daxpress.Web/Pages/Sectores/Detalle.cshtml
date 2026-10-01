@@ -1,0 +1,67 @@
+@page "/sectores/{slug}"
+@model Daxpress.Web.Pages.Sectores.DetalleModel
+@{
+    var s = Model.Sector;
+    var sugerido = SiteContent.BuscarServicio(s.ServicioSugerido);
+    var casos = SiteContent.Casos.Where(c => c.Sector == s.Slug).ToList();
+    ViewData["Title"] = s.TituloSeo;
+    ViewData["Description"] = s.DescripcionSeo;
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <nav class="migas" aria-label="Ruta"><a href="/sectores">Sectores</a> / @s.Nombre</nav>
+        <h1>@s.Titular</h1>
+        <p class="cabezal__bajada">@s.Intro</p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor dos-columnas">
+        <div>
+            <h2>¿Te pasa esto?</h2>
+            <ul class="lista-simple lista-simple--problema">
+                @foreach (var p in s.Problemas)
+                {
+                    <li>@p</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <h2>Cómo lo resolvemos</h2>
+            <ul class="lista-check">
+                @foreach (var p in s.Soluciones)
+                {
+                    <li>@p</li>
+                }
+            </ul>
+        </div>
+    </div>
+</section>
+
+@if (sugerido is not null || casos.Count > 0)
+{
+    <section class="seccion seccion--alterna">
+        <div class="contenedor tarjetas">
+            @if (sugerido is not null)
+            {
+                <a class="tarjeta" href="/servicios/@sugerido.Slug">
+                    <p class="etiqueta">Servicio recomendado</p>
+                    <h2 class="tarjeta__h">@sugerido.Nombre</h2>
+                    <p>@sugerido.Resumen</p>
+                    <p class="tarjeta__pie"><strong>@sugerido.Precio</strong> · @sugerido.Plazo</p>
+                </a>
+            }
+            @foreach (var c in casos)
+            {
+                <a class="tarjeta" href="/casos#@c.Slug">
+                    <p class="etiqueta">Caso</p>
+                    <h2 class="tarjeta__h">@c.Titulo</h2>
+                    <p>@c.Solucion</p>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<partial name="_Cta" />

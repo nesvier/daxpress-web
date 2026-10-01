@@ -1,0 +1,22 @@
+@page "/no-encontrado"
+@{
+    ViewData["Title"] = "Página no encontrada";
+    if (Response.StatusCode == 200)
+    {
+        Response.StatusCode = 404;
+    }
+}
+@section Head {
+    <meta name="robots" content="noindex" />
+}
+
+<section class="cabezal cabezal--centro">
+    <div class="contenedor">
+        <h1>No encontramos esta página</h1>
+        <p class="cabezal__bajada">Puede que el enlace haya cambiado. Probá desde el inicio o mirá nuestros servicios.</p>
+        <div class="hero__acciones">
+            <a class="boton" href="/">Ir al inicio</a>
+            <a class="boton boton--borde" href="/servicios">Ver servicios</a>
+        </div>
+    </div>
+</section>

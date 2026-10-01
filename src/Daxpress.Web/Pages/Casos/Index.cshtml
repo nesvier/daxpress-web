@@ -1,0 +1,48 @@
+@page
+@{
+    ViewData["Title"] = "Casos de éxito: reservas e inventario para pymes";
+    ViewData["Description"] = "Proyectos que desarrollamos: plataforma de reservas para un centro de bienestar y aplicación de inventario para control de stock.";
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <p class="etiqueta">Casos</p>
+        <h1>Proyectos que ya construimos</h1>
+        <p class="cabezal__bajada">Cada proyecto nuevo parte de soluciones probadas, por eso podemos entregar más rápido y con menos riesgo.</p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor casos">
+        @foreach (var c in SiteContent.Casos)
+        {
+            var sector = SiteContent.BuscarSector(c.Sector);
+            <article class="caso" id="@c.Slug">
+                @if (sector is not null)
+                {
+                    <p class="etiqueta"><a href="/sectores/@sector.Slug">@sector.Nombre</a></p>
+                }
+                <h2>@c.Titulo</h2>
+                <div class="dos-columnas">
+                    <div>
+                        <h3>El problema</h3>
+                        <p>@c.Problema</p>
+                        <h3>La solución</h3>
+                        <p>@c.Solucion</p>
+                    </div>
+                    <div>
+                        <h3>Funciones principales</h3>
+                        <ul class="lista-check">
+                            @foreach (var f in c.Funciones)
+                            {
+                                <li>@f</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<partial name="_Cta" />

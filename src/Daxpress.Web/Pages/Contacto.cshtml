@@ -1,0 +1,96 @@
+@page
+@model ContactoModel
+@{
+    ViewData["Title"] = "Agendá un diagnóstico sin costo";
+    ViewData["Description"] = "Contanos qué tareas hace tu equipo a mano y te respondemos con una propuesta de diagnóstico gratuito. Software a medida en Montevideo.";
+    var site = SiteOpts.Value;
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <p class="etiqueta">Contacto</p>
+        <h1>Agendá tu diagnóstico sin costo</h1>
+        <p class="cabezal__bajada">En una reunión de 1–2 horas relevamos tus procesos y en una semana te entregamos un informe con las horas que podés ahorrar y el costo estimado.</p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor dos-columnas dos-columnas--formulario">
+        <div>
+            @if (Model.Enviado)
+            {
+                <div class="aviso" role="status">
+                    <h2>¡Gracias! Recibimos tu solicitud.</h2>
+                    <p>Te vamos a escribir dentro de las próximas 24 horas hábiles para coordinar el diagnóstico.</p>
+                </div>
+            }
+            else
+            {
+                <form method="post" class="formulario" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="formulario__errores"></div>
+
+                    <div class="campo">
+                        <label asp-for="Solicitud.Nombre">Nombre</label>
+                        <input asp-for="Solicitud.Nombre" autocomplete="name" />
+                        <span asp-validation-for="Solicitud.Nombre" class="campo__error"></span>
+                    </div>
+                    <div class="campo">
+                        <label asp-for="Solicitud.Empresa">Empresa</label>
+                        <input asp-for="Solicitud.Empresa" autocomplete="organization" />
+                        <span asp-validation-for="Solicitud.Empresa" class="campo__error"></span>
+                    </div>
+                    <div class="campo-fila">
+                        <div class="campo">
+                            <label asp-for="Solicitud.Email">Correo</label>
+                            <input asp-for="Solicitud.Email" type="email" autocomplete="email" />
+                            <span asp-validation-for="Solicitud.Email" class="campo__error"></span>
+                        </div>
+                        <div class="campo">
+                            <label asp-for="Solicitud.Telefono">Teléfono / WhatsApp <small>(opcional)</small></label>
+                            <input asp-for="Solicitud.Telefono" type="tel" autocomplete="tel" />
+                            <span asp-validation-for="Solicitud.Telefono" class="campo__error"></span>
+                        </div>
+                    </div>
+                    <div class="campo">
+                        <label asp-for="Solicitud.Sector">Tipo de negocio</label>
+                        <select asp-for="Solicitud.Sector">
+                            <option value="">Elegí una opción</option>
+                            @foreach (var s in SiteContent.Sectores)
+                            {
+                                <option value="@s.Slug">@s.Nombre</option>
+                            }
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label asp-for="Solicitud.Mensaje">¿Qué tarea te gustaría automatizar?</label>
+                        <textarea asp-for="Solicitud.Mensaje" rows="5" placeholder="Por ejemplo: armamos los pedidos a proveedores copiando el stock de una planilla…"></textarea>
+                        <span asp-validation-for="Solicitud.Mensaje" class="campo__error"></span>
+                    </div>
+                    <div class="trampa" aria-hidden="true">
+                        <label for="Web">No completar</label>
+                        <input asp-for="Web" tabindex="-1" autocomplete="off" />
+                    </div>
+                    <button type="submit" class="boton">Solicitar diagnóstico</button>
+                </form>
+            }
+        </div>
+
+        <aside class="contacto-lateral">
+            <h2>Qué pasa después</h2>
+            <ol class="lista-numerada">
+                <li>Te escribimos para coordinar día y hora.</li>
+                <li>Hacemos el relevamiento (presencial en Montevideo o por videollamada).</li>
+                <li>En una semana recibís el informe con horas ahorrables y costo estimado.</li>
+            </ol>
+            @if (!string.IsNullOrEmpty(site.WhatsApp))
+            {
+                <a class="boton boton--whatsapp" href="@site.WhatsAppUrl()" rel="noopener" target="_blank">Escribinos por WhatsApp</a>
+            }
+            @if (!string.IsNullOrEmpty(site.Email))
+            {
+                <p>O por correo: <a href="mailto:@site.Email">@site.Email</a></p>
+            }
+        </aside>
+    </div>
+</section>

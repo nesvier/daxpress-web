@@ -1,0 +1,35 @@
+@page
+@{
+    ViewData["Title"] = "Blog: automatización y gestión para pymes";
+    ViewData["Description"] = "Guías prácticas para ordenar el stock, las reservas y las tareas administrativas de tu pyme en Uruguay.";
+}
+
+<section class="cabezal">
+    <div class="contenedor">
+        <p class="etiqueta">Blog</p>
+        <h1>Ideas para ahorrar horas en tu pyme</h1>
+        <p class="cabezal__bajada">Guías prácticas sobre stock, reservas, facturación electrónica y automatización.</p>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor">
+        @if (SiteContent.Blog.Count == 0)
+        {
+            <p class="vacio">Estamos preparando los primeros artículos. Mientras tanto, <a href="/contacto">contanos qué tarea te gustaría automatizar</a>.</p>
+        }
+        else
+        {
+            <div class="tarjetas">
+                @foreach (var a in SiteContent.Blog.OrderByDescending(a => a.Fecha))
+                {
+                    <a class="tarjeta" href="/blog/@a.Slug">
+                        <p class="etiqueta">@a.Fecha.ToString("d 'de' MMMM, yyyy", new System.Globalization.CultureInfo("es-UY"))</p>
+                        <h2 class="tarjeta__h">@a.Titulo</h2>
+                        <p>@a.Resumen</p>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,75 @@
+@page
+@{
+    ViewData["Title"] = null;
+}
+
+<section class="hero">
+    <div class="contenedor hero__grilla">
+        <div>
+            <p class="etiqueta">Software a medida en Montevideo</p>
+            <h1>Dejá de perder horas en tareas que una aplicación puede hacer por vos</h1>
+            <p class="hero__bajada">En Daxpress automatizamos las tareas administrativas de tu pyme: stock, reservas, cobros, reportes y facturación electrónica. Primero entendemos cómo trabajás, después construimos la herramienta.</p>
+            <div class="hero__acciones">
+                <a class="boton" href="/contacto">Agendar diagnóstico sin costo</a>
+                <a class="boton boton--borde" href="/servicios">Ver servicios y precios</a>
+            </div>
+        </div>
+        <ul class="hero__tareas" aria-label="Tareas que automatizamos">
+            <li><span>✓</span> Pasar datos entre planillas, correos y sistemas</li>
+            <li><span>✓</span> Armar facturas, cotizaciones o reportes</li>
+            <li><span>✓</span> Seguir clientes y cobros pendientes</li>
+            <li><span>✓</span> Controlar inventario y pedidos a proveedores</li>
+            <li><span>✓</span> Gestionar agendas, reservas y recordatorios</li>
+            <li><span>✓</span> Aprobar gastos, compras o permisos</li>
+        </ul>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor">
+        <h2 class="seccion__titulo">Servicios</h2>
+        <p class="seccion__bajada">Todo empieza con un diagnóstico sin costo. A partir de ahí elegís el paquete que se ajusta a tu necesidad.</p>
+        <div class="tarjetas">
+            @foreach (var s in SiteContent.Servicios)
+            {
+                <a class="tarjeta" href="/servicios/@s.Slug">
+                    <h3>@s.Nombre</h3>
+                    <p>@s.Resumen</p>
+                    <p class="tarjeta__pie"><strong>@s.Precio</strong> · @s.Plazo</p>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="seccion seccion--alterna">
+    <div class="contenedor">
+        <h2 class="seccion__titulo">Para qué tipo de negocio</h2>
+        <div class="tarjetas tarjetas--3">
+            @foreach (var s in SiteContent.Sectores)
+            {
+                <a class="tarjeta" href="/sectores/@s.Slug">
+                    <h3>@s.Nombre</h3>
+                    <p>@s.Intro</p>
+                    <p class="tarjeta__pie enlace">Ver soluciones →</p>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor">
+        <h2 class="seccion__titulo">Cómo trabajamos</h2>
+        <p class="seccion__bajada">Cada proyecto sigue cinco pasos, y en cada uno sabés qué se entrega.</p>
+        <ol class="pasos">
+            <li><strong>Diagnóstico</strong>Relevamos tus procesos y medimos cuántas horas se pierden.</li>
+            <li><strong>Propuesta</strong>Alcance, plazo y precio cerrado por escrito.</li>
+            <li><strong>Desarrollo</strong>Avances cada semana para que veas y opines.</li>
+            <li><strong>Entrega y capacitación</strong>Tu equipo aprende a usarla antes del cierre.</li>
+            <li><strong>Soporte</strong>Acompañamiento mensual y mejoras continuas.</li>
+        </ol>
+    </div>
+</section>
+
+<partial name="_Cta" />
