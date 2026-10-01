@@ -44,22 +44,22 @@ public static class SiteContent
         new(
             Slug: "diagnostico-gratuito",
             Nombre: "Diagnóstico sin costo",
-            Resumen: "Relevamos tus procesos y te decimos cuántas horas por semana podés ahorrar.",
+            Resumen: "Relevamos tus procesos y te decimos qué se puede automatizar y cuánto costaría.",
             Precio: "Sin costo",
             Plazo: "1 semana",
             TituloSeo: "Diagnóstico gratuito de procesos para pymes en Montevideo",
-            DescripcionSeo: "Reunión de 1–2 horas e informe con las tareas que tu pyme puede automatizar, las horas ahorrables y el costo estimado. Sin compromiso.",
+            DescripcionSeo: "Reunión de 1–2 horas e informe con las tareas que tu pyme puede automatizar y el costo estimado de la solución. Sin compromiso.",
             Intro: "Antes de escribir una línea de código entendemos cómo trabaja tu equipo. En una reunión de 1 a 2 horas recorremos tus procesos y, en una semana, te entregamos un informe claro.",
             Incluye:
             [
                 "Reunión de relevamiento de 1–2 horas (presencial en Montevideo o por videollamada)",
                 "Mapa de las tareas repetitivas de tu equipo",
-                "Estimación de horas ahorrables por semana",
+                "Prioridades: qué conviene automatizar primero",
                 "Propuesta de solución con costo y plazo estimados",
             ],
             Ejemplos:
             [
-                "Detectar que el cierre de caja diario lleva 40 minutos de planilla",
+                "Detectar que el cierre de caja diario se hace a mano en una planilla",
                 "Encontrar pedidos a proveedores que se arman copiando datos a mano",
             ]),
         new(
@@ -70,7 +70,7 @@ public static class SiteContent
             Plazo: "1–2 semanas",
             TituloSeo: "Automatización de tareas administrativas para pymes en Uruguay",
             DescripcionSeo: "Reportes automáticos, recordatorios, alertas de stock y carga de formularios a planillas. Automatizaciones puntuales en 1–2 semanas desde USD 300.",
-            Intro: "Ideal cuando hay una tarea concreta que le roba horas a tu equipo. La automatizamos rápido, con precio cerrado, y empezás a ahorrar tiempo desde la primera semana.",
+            Intro: "Ideal cuando hay una tarea concreta que le roba horas a tu equipo. La automatizamos rápido y con precio cerrado, para que tu equipo se dedique a lo importante.",
             Incluye:
             [
                 "Una tarea o flujo automatizado de punta a punta",
