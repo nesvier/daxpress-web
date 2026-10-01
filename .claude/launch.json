@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "daxpress",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Daxpress.Web", "--launch-profile", "http"],
+      "port": 5180,
+      "url": "http://localhost:5180"
+    }
+  ]
+}
