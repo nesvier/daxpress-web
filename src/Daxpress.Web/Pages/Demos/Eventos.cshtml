@@ -1,0 +1,107 @@
+@page "/demos/eventos-r8m2qk"
+@using Daxpress.Web.Demos.Eventos
+@{
+    Layout = "_LayoutDemo";
+    ViewData["Title"] = "Menús para eventos — demo";
+}
+@section Head {
+    <link rel="stylesheet" href="~/demos/eventos.css" asp-append-version="true" />
+}
+
+<header class="cabecera">
+    <div class="contenedor">
+        <p class="marca">Tu Evento <span>· servicio integral de eventos</span></p>
+        <h1>Menús para eventos</h1>
+        <nav class="pestanas" role="tablist" aria-label="Secciones">
+            <button type="button" role="tab" data-tab="armar" aria-selected="true">Armar menú</button>
+            <button type="button" role="tab" data-tab="platos" aria-selected="false">Platos y precios</button>
+        </nav>
+    </div>
+</header>
+
+<noscript><p class="contenedor aviso-js">Esta demo necesita JavaScript activado.</p></noscript>
+
+@* Armar menú *@
+<section class="contenedor seccion" data-panel-tab="armar" role="tabpanel">
+    <div class="evento">
+        <label>Evento <input type="text" data-evento="nombre" placeholder="Ej.: Casamiento Pérez – Rodríguez" maxlength="80" /></label>
+        <label>Fecha <input type="date" data-evento="fecha" /></label>
+        <label>Personas <input type="number" data-evento="personas" min="0" max="5000" inputmode="numeric" placeholder="0" /></label>
+    </div>
+    <div class="columnas">
+        <div data-categorias></div>
+        <aside class="panel" aria-label="Tu selección">
+            <h2>Tu selección</h2>
+            <div data-seleccion></div>
+            <div class="errores" data-errores hidden></div>
+            <button type="button" class="boton boton--ancho" data-ver-informes>Ver informes</button>
+        </aside>
+    </div>
+    <div class="barra-movil">
+        <span data-conteo></span>
+        <button type="button" class="boton" data-ver-informes>Ver informes</button>
+    </div>
+</section>
+
+@* Informes *@
+<section class="contenedor seccion informes" data-vista-informes hidden>
+    <div class="informes__barra">
+        <button type="button" class="boton boton--borde" data-volver>← Modificar selección</button>
+        <div class="segmentos" role="tablist" aria-label="Informe">
+            <button type="button" role="tab" data-informe="costo" aria-selected="true">Costo</button>
+            <button type="button" role="tab" data-informe="publico" aria-selected="false">Precio al público</button>
+            <button type="button" role="tab" data-informe="personal" aria-selected="false">Cantidades para el personal</button>
+        </div>
+        <button type="button" class="boton" data-imprimir>Imprimir / PDF</button>
+    </div>
+    <article class="hoja" data-hoja></article>
+</section>
+
+@* Platos y precios *@
+<section class="contenedor seccion" data-panel-tab="platos" role="tabpanel" hidden>
+    <div class="columnas columnas--admin">
+        <form class="ficha" data-form-plato novalidate>
+            <h2 data-form-titulo>Nuevo plato</h2>
+            <label class="campo">Nombre
+                <input name="nombre" required maxlength="80" placeholder="Ej.: Sándwiches mixtos" />
+            </label>
+            <label class="campo"><span>Descripción <small>(opcional)</small></span>
+                <input name="descripcion" maxlength="140" placeholder="Ej.: Jamón y queso en pan de miga" />
+            </label>
+            <label class="campo">Categoría
+                <select name="categoria" required>
+                    <option value="entradas">Entradas</option>
+                    <option value="calientes">Platos calientes</option>
+                    <option value="principales">Plato principal</option>
+                </select>
+            </label>
+            <div class="campo-fila">
+                <label class="campo"><span>Precio de compra <small>($ por unidad)</small></span>
+                    <input name="costo" type="number" min="0" step="any" inputmode="decimal" required />
+                </label>
+                <label class="campo"><span>Precio de venta <small>($ por unidad)</small></span>
+                    <input name="precio" type="number" min="0" step="any" inputmode="decimal" required />
+                </label>
+            </div>
+            <label class="campo"><span>Se vende de a <small>(unidades)</small></span>
+                <input name="pack" type="number" min="1" step="1" value="1" inputmode="numeric" required />
+            </label>
+            <p class="margen" data-margen></p>
+            <p class="errores" data-form-errores hidden></p>
+            <div class="ficha__acciones">
+                <button type="submit" class="boton" data-form-guardar>Agregar plato</button>
+                <button type="button" class="boton boton--borde" data-form-cancelar hidden>Cancelar</button>
+            </div>
+        </form>
+        <div>
+            <div data-lista-platos></div>
+            <button type="button" class="enlace-boton" data-restablecer>Volver a los platos de ejemplo</button>
+        </div>
+    </div>
+</section>
+
+<script type="application/json" id="platos-ejemplo">@Json.Serialize(MenuEventos.PlatosEjemplo)</script>
+
+@section Scripts {
+    <script src="~/demos/eventos.js" asp-append-version="true"></script>
+}

@@ -35,6 +35,19 @@ no es persistente: las solicitudes en `App_Data` se pierden al redeployar.
 Fuera del dominio oficial (`Site:BaseUrl`) el sitio se marca `noindex` y `robots.txt` bloquea todo,
 así la dirección provisoria no compite en Google con la definitiva.
 
+## Demos para clientes
+
+Viven en `/demos/<nombre>-<código>` (ruta difícil de adivinar), usan `Pages/Demos/_LayoutDemo.cshtml`
+(sin menú de Daxpress, con aviso de datos ficticios) y no aparecen en el menú, el sitemap ni Google
+(`noindex` + `Disallow: /demos/`). Solo entra quien tiene el link: usar siempre datos inventados.
+
+| Demo | Ruta | Archivos |
+| --- | --- | --- |
+| Menús para eventos | `/demos/eventos-r8m2qk` | `Pages/Demos/Eventos.cshtml`, `Demos/Eventos/MenuEventos.cs`, `wwwroot/demos/eventos.*` |
+
+La demo de eventos guarda lo que carga el cliente en su navegador (localStorage), así no se pierde
+cuando el hosting gratuito reinicia el servidor.
+
 ## Pendiente
 
 - Completar `Site:WhatsApp` (formato `598XXXXXXXX`); el botón de WhatsApp se muestra solo cuando hay número.

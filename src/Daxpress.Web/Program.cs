@@ -30,7 +30,7 @@ app.MapRazorPages();
 
 app.MapGet("/robots.txt", (HttpRequest request, IOptions<SiteOptions> site) =>
     site.Value.EsDominioOficial(request)
-        ? Results.Text($"User-agent: *\nAllow: /\n\nSitemap: {site.Value.BaseUrl}/sitemap.xml\n", "text/plain")
+        ? Results.Text($"User-agent: *\nAllow: /\nDisallow: /demos/\n\nSitemap: {site.Value.BaseUrl}/sitemap.xml\n", "text/plain")
         : Results.Text("User-agent: *\nDisallow: /\n", "text/plain"));
 
 app.MapGet("/sitemap.xml", (IOptions<SiteOptions> site) =>

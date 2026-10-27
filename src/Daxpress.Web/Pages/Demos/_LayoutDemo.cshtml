@@ -1,0 +1,17 @@
+@* Layout de las demos para clientes: sin menú de Daxpress, fuera de Google y con aviso de datos ficticios. *@
+<!DOCTYPE html>
+<html lang="es-UY">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <div class="aviso-demo">Demo preparada por <a href="/" target="_blank" rel="noopener">Daxpress</a> · los datos son ficticios</div>
+    @RenderBody()
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
