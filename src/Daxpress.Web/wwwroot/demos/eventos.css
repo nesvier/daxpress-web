@@ -53,7 +53,32 @@ small { color: var(--suave); font-weight: 400; }
 
 /* Datos del evento */
 .evento { display: grid; gap: 12px; margin-bottom: 28px; padding: 16px; background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); }
-@media (min-width: 720px) { .evento { grid-template-columns: 2fr 1fr 1fr; } }
+.evento { grid-template-columns: repeat(3, 1fr); }
+.evento__nombre, .evento__fecha { grid-column: 1 / -1; }
+@media (min-width: 720px) {
+  .evento { grid-template-columns: repeat(6, 1fr); }
+  .evento__nombre { grid-column: span 4; }
+  .evento__fecha { grid-column: span 2; }
+  .evento label:not(.evento__nombre):not(.evento__fecha) { grid-column: span 2; }
+}
+@media (max-width: 400px) { .evento label { font-size: .82rem; } }
+
+/* Mínimo recomendado */
+.medidor { margin: -6px 0 16px; padding: 10px 14px; background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; font-size: .93rem; }
+.medidor__texto { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; }
+.medidor__texto strong { color: var(--tinta); }
+.medidor__barra { height: 6px; margin-top: 8px; background: var(--linea); border-radius: 999px; overflow: hidden; }
+.medidor__barra span { display: block; height: 100%; width: 0; background: var(--rojo); border-radius: 999px; transition: width .2s; }
+.medidor--ok .medidor__barra span { background: var(--verde); }
+.medidor__estado { font-weight: 600; color: var(--rojo); }
+.medidor--ok .medidor__estado { color: var(--verde); }
+.medidor--sin-datos { color: var(--suave); }
+.minimos { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--linea); }
+.minimos div { display: flex; justify-content: space-between; padding: 2px 0; font-size: .93rem; }
+.minimos dt { color: var(--suave); }
+.minimos dd { margin: 0; font-weight: 600; color: var(--rojo); }
+.minimos .ok dd { color: var(--verde); }
+.aviso-minimo { margin: 12px 0 0; font-size: .88rem; color: var(--acento-osc); }
 .evento label, .campo { display: grid; gap: 4px; font-weight: 600; font-size: .9rem; color: var(--tinta); }
 .evento input, .campo input, .campo select { font: inherit; font-weight: 400; color: var(--tinta); padding: 10px 12px; border: 1px solid #d8ccbe;
   border-radius: 10px; background: #fff; width: 100%; }

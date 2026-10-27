@@ -20,13 +20,16 @@
     platos: structuredClone(ejemplo),
     cantidades: {},
     principalId: null,
-    principalCantidad: 0,
-    evento: { nombre: '', fecha: '', personas: '' },
+    evento: { nombre: '', fecha: '', adultos: '', adolescentes: '', ninos: '' },
   });
 
   let estado;
   try { estado = JSON.parse(localStorage.getItem(CLAVE)); } catch { estado = null; }
   if (!estado || !Array.isArray(estado.platos)) estado = estadoInicial();
+  // Versión anterior de la demo: un solo campo "personas" y porciones del principal cargadas a mano
+  if (estado.evento.adultos === undefined) estado.evento.adultos = estado.evento.personas ?? '';
+  delete estado.evento.personas;
+  delete estado.principalCantidad;
 
   const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(estado)); } catch { /* sin almacenamiento: sigue en memoria */ } };
 
@@ -43,13 +46,38 @@
   const porc = x => `${Math.round(x * 100)}%`;
   const deA = p => (p.pack > 1 ? `de a ${p.pack}` : 'por unidad');
 
+  /** Invitados del evento por grupo de edad. */
+  function invitados() {
+    const ev = estado.evento;
+    const adultos = entero(ev.adultos), adolescentes = entero(ev.adolescentes), ninos = entero(ev.ninos);
+    return { adultos, adolescentes, ninos, total: adultos + adolescentes + ninos };
+  }
+
+  /** Mínimos recomendados: entradas 6/3/3 y calientes 3/2/2 (adulto/adolescente/niño). */
+  function minimos() {
+    const i = invitados();
+    return {
+      entradas: 6 * i.adultos + 3 * i.adolescentes + 3 * i.ninos,
+      calientes: 3 * i.adultos + 2 * i.adolescentes + 2 * i.ninos,
+    };
+  }
+
+  /** El plato principal es uno por adulto (redondeado a la presentación del plato). */
+  function porcionesPrincipal() {
+    const p = plato(estado.principalId);
+    return p ? aPack(invitados().adultos, p.pack) : 0;
+  }
+
+  const unidadesDe = cat => platosDe(cat).reduce((s, p) => s + (estado.cantidades[p.id] || 0), 0);
+
   /** Líneas elegidas, agrupadas por categoría, en el orden del menú. */
   function lineas() {
     return CATEGORIAS.map(cat => {
       let items;
       if (cat.unica) {
         const p = plato(estado.principalId);
-        items = p && p.categoria === cat.id && estado.principalCantidad > 0 ? [{ plato: p, cantidad: estado.principalCantidad }] : [];
+        const porciones = porcionesPrincipal();
+        items = p && p.categoria === cat.id && porciones > 0 ? [{ plato: p, cantidad: porciones }] : [];
       } else {
         items = platosDe(cat.id).map(p => ({ plato: p, cantidad: estado.cantidades[p.id] || 0 })).filter(x => x.cantidad > 0);
       }
@@ -92,19 +120,25 @@
       if (!p || p.categoria === 'principales') delete estado.cantidades[id];
     });
     const principal = plato(estado.principalId);
-    if (!principal || principal.categoria !== 'principales') { estado.principalId = null; estado.principalCantidad = 0; }
+    if (!principal || principal.categoria !== 'principales') estado.principalId = null;
 
     contenedorCategorias.innerHTML = CATEGORIAS.map(cat => {
       const platos = platosDe(cat.id);
       const cuerpo = platos.length === 0
         ? `<p class="vacio">No hay platos en esta categoría. Agregalos en <button type="button" class="enlace-boton" data-ir-platos>Platos y precios</button>.</p>`
         : cat.unica ? renderPrincipales(platos) : `<div class="platos">${platos.map(renderPlato).join('')}</div>`;
-      return `<section class="categoria"><h2>${cat.nombre}</h2><p class="ayuda">${cat.ayuda}</p>${cuerpo}</section>`;
+      const medidor = cat.unica ? '' : `<div class="medidor" data-medidor="${cat.id}">
+          <div class="medidor__texto"><span data-medidor-texto></span><span class="medidor__estado" data-medidor-estado></span></div>
+          <div class="medidor__barra"><span></span></div>
+        </div>`;
+      return `<section class="categoria"><h2>${cat.nombre}</h2><p class="ayuda">${cat.ayuda}</p>${medidor}${cuerpo}</section>`;
     }).join('');
 
-    const ev = estado.evento;
-    $$('[data-evento]').forEach(i => { i.value = ev[i.dataset.evento] ?? ''; });
     actualizarSeleccion();
+  }
+
+  function cargarEvento() {
+    $$('[data-evento]').forEach(i => { i.value = estado.evento[i.dataset.evento] ?? ''; });
   }
 
   function renderPlato(p) {
@@ -137,21 +171,15 @@
       </label>`;
     }).join('');
     const porciones = elegido
-      ? `<div class="porciones">
-          <label for="cant-principal">Porciones de <strong>${esc(elegido.nombre)}</strong></label>
-          ${contador('id="cant-principal" data-cantidad-principal', estado.principalCantidad, elegido.pack, elegido.nombre)}
-        </div>`
+      ? `<div class="porciones"><span>Porciones de <strong>${esc(elegido.nombre)}</strong></span>
+          <span data-porciones-texto></span></div>`
       : '';
     return `<div class="platos" role="radiogroup" aria-label="Plato principal">${opciones}</div>${porciones}`;
   }
 
   function fijarCantidad(input, valor) {
-    if (input.dataset.cantidad !== undefined) {
-      if (valor > 0) estado.cantidades[input.dataset.cantidad] = valor; else delete estado.cantidades[input.dataset.cantidad];
-      input.closest('.plato').classList.toggle('plato--activo', valor > 0);
-    } else {
-      estado.principalCantidad = valor;
-    }
+    if (valor > 0) estado.cantidades[input.dataset.cantidad] = valor; else delete estado.cantidades[input.dataset.cantidad];
+    input.closest('.plato').classList.toggle('plato--activo', valor > 0);
     guardar();
     actualizarSeleccion();
   }
@@ -181,31 +209,71 @@
       fijarCantidad(t, valor);
     } else if (t.name === 'principal') {
       estado.principalId = t.value;
-      estado.principalCantidad = aPack(estado.principalCantidad, plato(t.value).pack);
       guardar();
       renderArmado();
-      $('#cant-principal')?.focus();
     }
   });
 
   $$('[data-evento]').forEach(i => i.addEventListener('input', () => {
     estado.evento[i.dataset.evento] = i.value;
     guardar();
+    actualizarSeleccion();
   }));
+
+  /** Unidades elegidas frente al mínimo recomendado, por categoría. */
+  function estadoMinimos() {
+    const min = minimos();
+    return ['entradas', 'calientes'].map(id => {
+      const elegidas = unidadesDe(id), minimo = min[id];
+      return { id, nombre: CATEGORIAS.find(c => c.id === id).nombre, elegidas, minimo, ok: minimo > 0 && elegidas >= minimo };
+    });
+  }
+
+  function actualizarMedidores(estados) {
+    estados.forEach(m => {
+      const caja = $(`[data-medidor="${m.id}"]`);
+      if (!caja) return;
+      const sinDatos = m.minimo === 0;
+      caja.classList.toggle('medidor--ok', m.ok);
+      caja.classList.toggle('medidor--sin-datos', sinDatos);
+      $('[data-medidor-texto]', caja).innerHTML = sinDatos
+        ? `Elegidas: <strong>${m.elegidas} u.</strong> · cargá los invitados para ver el mínimo recomendado`
+        : `Elegidas: <strong>${m.elegidas} u.</strong> · mínimo recomendado: <strong>${m.minimo} u.</strong>`;
+      $('[data-medidor-estado]', caja).textContent = sinDatos ? '' : m.ok ? '✓ Cumple el mínimo' : `Faltan ${m.minimo - m.elegidas} u.`;
+      $('.medidor__barra span', caja).style.width = sinDatos ? '0' : `${Math.min(100, (m.elegidas / m.minimo) * 100)}%`;
+    });
+  }
 
   function actualizarSeleccion() {
     const grupos = lineas();
     const elegido = plato(estado.principalId);
+    const { adultos } = invitados();
+
+    const porcionesTexto = $('[data-porciones-texto]');
+    if (porcionesTexto) {
+      porcionesTexto.innerHTML = adultos > 0
+        ? `<strong>${porcionesPrincipal()}</strong> · 1 por adulto`
+        : '<span class="falta">Cargá la cantidad de adultos</span>';
+    }
+
     const html = grupos.map(({ cat, items }) => {
       let filas = items.map(({ plato: p, cantidad }) => `<li><span>${esc(p.nombre)}</span><strong>${cantidad} ${cat.unica ? 'porc.' : 'u.'}</strong></li>`);
-      if (cat.unica && elegido && estado.principalCantidad <= 0) filas = [`<li><span>${esc(elegido.nombre)}</span><strong class="falta">falta cantidad</strong></li>`];
+      if (cat.unica && elegido && adultos === 0) filas = [`<li><span>${esc(elegido.nombre)}</span><strong class="falta">faltan adultos</strong></li>`];
       return filas.length ? `<h3>${cat.nombre}</h3><ul>${filas.join('')}</ul>` : '';
     }).join('');
 
+    const estados = estadoMinimos();
+    actualizarMedidores(estados);
+    const conMinimo = estados.filter(m => m.minimo > 0);
+    const bloqueMinimos = conMinimo.length
+      ? `<dl class="minimos">${conMinimo.map(m => `<div class="${m.ok ? 'ok' : ''}"><dt>${m.nombre}</dt><dd>${m.elegidas} / ${m.minimo} u.</dd></div>`).join('')}</dl>
+         ${conMinimo.some(m => !m.ok) ? '<p class="aviso-minimo">Por debajo del mínimo recomendado.</p>' : ''}`
+      : '';
+
     const t = totales(grupos);
-    $('[data-seleccion]').innerHTML = html
+    $('[data-seleccion]').innerHTML = (html
       ? `${html}<dl class="totales"><div><dt>Venta</dt><dd>${pesos(t.venta)}</dd></div><div><dt>Costo</dt><dd>${pesos(t.costo)}</dd></div><div class="totales__fuerte"><dt>Ganancia</dt><dd>${pesos(t.ganancia)}</dd></div></dl>`
-      : '<p class="vacio">Todavía no elegiste ningún plato.</p>';
+      : '<p class="vacio">Todavía no elegiste ningún plato.</p>') + bloqueMinimos;
 
     const n = grupos.reduce((s, g) => s + g.items.length, 0);
     $('[data-conteo]').textContent = n === 0 ? 'Ningún plato elegido' : `${n} ${n === 1 ? 'plato' : 'platos'} · ${pesos(t.venta)}`;
@@ -217,7 +285,7 @@
     const grupos = lineas();
     if (!grupos.some(g => !g.cat.unica && g.items.length)) errores.push('Elegí al menos una entrada o un plato caliente.');
     if (!estado.principalId) errores.push('Elegí un plato principal.');
-    else if (estado.principalCantidad <= 0) errores.push('Indicá las porciones del plato principal.');
+    if (invitados().adultos === 0) errores.push('Cargá la cantidad de adultos (el plato principal es uno por adulto).');
     return errores;
   }
 
@@ -249,7 +317,11 @@
   function encabezadoEvento() {
     const ev = estado.evento;
     const fecha = ev.fecha ? new Date(ev.fecha + 'T12:00').toLocaleDateString('es-UY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
-    const datos = [fecha, entero(ev.personas) > 0 ? `${entero(ev.personas)} personas` : ''].filter(Boolean).join(' · ');
+    const i = invitados();
+    const grupos = [[i.adultos, 'adulto', 'adultos'], [i.adolescentes, 'adolescente', 'adolescentes'], [i.ninos, 'niño', 'niños']]
+      .filter(([n]) => n > 0).map(([n, uno, varios]) => `${n} ${n === 1 ? uno : varios}`);
+    const personas = grupos.length ? `${i.total} invitados (${grupos.join(', ')})` : '';
+    const datos = [fecha, personas].filter(Boolean).join(' · ');
     return `<p class="hoja__evento">${esc(ev.nombre || 'Evento sin nombre')}</p>${datos ? `<p class="hoja__datos">${esc(datos)}</p>` : ''}`;
   }
 
@@ -290,7 +362,7 @@
         <div class="fuerte"><dt>Ganancia</dt><dd>${pesos(t.ganancia)} <small>(${porc(t.venta ? t.ganancia / t.venta : 0)} de la venta)</small></dd></div>
       </dl>`;
     } else if (tipo === 'publico') {
-      const personas = entero(estado.evento.personas);
+      const personas = invitados().total;
       resumen = `<dl class="hoja__totales">
         <div class="fuerte"><dt>Total</dt><dd>${pesos(t.venta)}</dd></div>
         ${personas > 0 ? `<div><dt>Por persona</dt><dd>${pesos(t.venta / personas)}</dd></div>` : ''}
@@ -360,7 +432,6 @@
       Object.assign(plato(editando), datos);
       // Si cambió el pack, ajusta lo ya elegido a múltiplos del nuevo pack
       if (estado.cantidades[editando]) estado.cantidades[editando] = aPack(estado.cantidades[editando], datos.pack);
-      if (estado.principalId === editando) estado.principalCantidad = aPack(estado.principalCantidad, datos.pack);
     } else {
       estado.platos.push({ id: 'p-' + Date.now().toString(36), ...datos });
     }
@@ -407,7 +478,7 @@
       if (!confirm(`¿Eliminar "${p.nombre}"?`)) return;
       estado.platos = estado.platos.filter(x => x.id !== p.id);
       delete estado.cantidades[p.id];
-      if (estado.principalId === p.id) { estado.principalId = null; estado.principalCantidad = 0; }
+      if (estado.principalId === p.id) estado.principalId = null;
       if (editando === p.id) limpiarForm();
       guardar();
       renderListaPlatos();
@@ -418,10 +489,12 @@
     if (!confirm('Se borran los platos que cargaste y la selección actual, y vuelven los platos de ejemplo. ¿Continuar?')) return;
     estado = estadoInicial();
     guardar();
+    cargarEvento();
     limpiarForm();
     renderListaPlatos();
   });
 
   // ---------- Inicio ----------
+  cargarEvento();
   irA(location.hash === '#platos' ? 'platos' : 'armar');
 })();

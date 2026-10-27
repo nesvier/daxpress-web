@@ -24,9 +24,11 @@
 @* Armar menú *@
 <section class="contenedor seccion" data-panel-tab="armar" role="tabpanel">
     <div class="evento">
-        <label>Evento <input type="text" data-evento="nombre" placeholder="Ej.: Casamiento Pérez – Rodríguez" maxlength="80" /></label>
-        <label>Fecha <input type="date" data-evento="fecha" /></label>
-        <label>Personas <input type="number" data-evento="personas" min="0" max="5000" inputmode="numeric" placeholder="0" /></label>
+        <label class="evento__nombre">Evento <input type="text" data-evento="nombre" placeholder="Ej.: Casamiento Pérez – Rodríguez" maxlength="80" /></label>
+        <label class="evento__fecha">Fecha <input type="date" data-evento="fecha" /></label>
+        <label>Adultos <input type="number" data-evento="adultos" min="0" max="5000" inputmode="numeric" placeholder="0" /></label>
+        <label>Adolescentes <input type="number" data-evento="adolescentes" min="0" max="5000" inputmode="numeric" placeholder="0" /></label>
+        <label>Niños <input type="number" data-evento="ninos" min="0" max="5000" inputmode="numeric" placeholder="0" /></label>
     </div>
     <div class="columnas">
         <div data-categorias></div>
